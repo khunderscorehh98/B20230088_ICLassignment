@@ -1,36 +1,47 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta  # Import to handle date and time calculations
 
-def day_counter(graduation_date, graduation_month, graduation_year):
-    convertDate = datetime(graduation_year, graduation_month, graduation_date)
-    x = datetime.today()
+# Function to calculate total days, working days (Mon-Fri), and non-working days (Sat-Sun)
+def calculate_days_to_graduation(grad_day, grad_month, grad_year):
+    # Step 1: Convert the graduation date into a date object
+    graduation_date = datetime(grad_year, grad_month, grad_day)
 
-    # Exclude the final date by reducing one day from the total difference
-    graduationLeft = convertDate - x - timedelta(days=1)
+    # Step 2: Get today's date (current date)
+    today_date = datetime.today()
 
-    # Initialize counters for working days and non-working days
+    # Step 3: Calculate the difference in days between graduation day and today
+    days_left = (graduation_date - today_date).days  # Total days until graduation
+
+    # Step 4: Set counters for working and non-working days
     working_days = 0
     non_working_days = 0
 
-    # Loop through each day between today and the day before graduation
-    for i in range(graduationLeft.days):
-        current_day = x + timedelta(days=i)
-        if current_day.weekday() < 5:  # Monday to Friday are considered working days
+    # Step 5: Loop through the range of days left until graduation
+    for day in range(days_left):
+        # Calculate each date one by one
+        current_day = today_date + timedelta(days=day)
+        
+        # Step 6: Check if it's a working day (Mon-Fri) or non-working day (Sat-Sun)
+        if current_day.weekday() < 5:  # Weekdays: Monday=0, Friday=4
             working_days += 1
         else:
             non_working_days += 1
 
-    # Include the final date in the working day count if it's a working day
-    if convertDate.weekday() < 5:
+    # Step 7: Include graduation day if it falls on a working day
+    if graduation_date.weekday() < 5:
         working_days += 1
 
-    return graduationLeft.days, working_days, non_working_days
+    # Return the results
+    return days_left, working_days, non_working_days
 
-graduation_date = int(input('Enter Graduation Date: '))
-graduation_month = int(input('Enter Graduation Month: '))
-graduation_year = int(input('Enter Graduation Year: '))
+# Input: Ask the user to enter their graduation date
+grad_day = int(input("Enter the day you will graduate (1-31): "))
+grad_month = int(input("Enter the month you will graduate (1-12): "))
+grad_year = int(input("Enter the year you will graduate (e.g., 2024): "))
 
-days_left, working_days, non_working_days = day_counter(graduation_date, graduation_month, graduation_year)
+# Call the function to calculate the days remaining
+days_left, working_days_left, non_working_days_left = calculate_days_to_graduation(grad_day, grad_month, grad_year)
 
-print(f"{days_left} days left until graduation, excluding the final date.")
-print(f"Working days left: {working_days}")
-print(f"Non-working days left: {non_working_days}")
+# Output: Display the results to the user
+print(f"Days left until graduation: {days_left} days")
+print(f"Working days left: {working_days_left} days")
+print(f"Non-working days left: {non_working_days_left} days")
